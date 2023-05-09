@@ -1,0 +1,99 @@
+堡垒机  手机号验证
+SecureLink 登录：
+企业标识：kingdee
+用户名：qinyiok_zhang  !zqy335148445
+
+行云管家：
+zhangqinyi 密码：!zQY335148445@
+
+跳板机  192.168.0.49
+zhangqinyi Kdptest@2021
+
+
+性能环境mc可读写账号：
+zhongyuan_xu/Kingdee000000
+
+环境地址：
+性能环境monitor      https://cbgstressnew.test.kdcloud.com/bigdata/monitor/eye/#/home/index     admin/Cosmic@2021
+
+基线冒烟monitor密码：Admin#123
+
+主干写账号：
+mc_patchhr_test_up_pg/mc_patchhr_test_up_pg_kd
+
+
+
+星瀚HR数据库账号控权
+ 需要修改的密码的数据库账号以及新密码如下：
+172.18.9.70
+	mc_devhr_test_up/mc_devhr_test_up_kd
+	mc_patchhr_test_up/mc_patchhr_test_up_kd
+	mc_devhrprj_test_mysql/mc_devhrprj_test_mysql_kd
+	mc_patchhrprj_test_mysql/mc_patchhrprj_test_mysql_kd
+	mc_patchhrprj_smoke_mysql/mc_patchhrprj_smoke_mysql_kd
+	mc_baselinehrprj_smoke_mysql/mc_baselinehrprj_smoke_mysql_kd
+	mc_baselinehrprj_test_mysql/mc_baselinehrprj_test_mysql_kd
+172.18.9.71
+	 
+	mc_patchhr_test_up_pg/mc_patchhr_test_up_pg_kd
+	mc_patchhr_test_new/mc_patchhr_test_new_kd
+	mc_patchhr_test_initdb_pg/mc_patchhr_test_initdb_pg
+	mc_devhrprj_test_pg/mc_devhrprj_test_pg_kd
+	mc_patchhrprj_test_pg/mc_patchhrprj_test_pg_kd
+	mc_baselinehrprj_smoke_pg/mc_baselinehrprj_smoke_pg
+172.17.201.75
+	mc_patchhr_patch_pg/mc_patchhr_patch_pg
+	mc_devhr_dev_pg/mc_devhr_dev_pg
+	mc_devhrprj_dev_pg/mc_devhrprj_dev_pg
+	mc_devhrbjprj_dev_pg/mc_devhrbjprj_dev_pg
+只读权限账号如下：
+	dev_sel/kingdeedev
+
+
+
+
+外网：
+集群名称：feature_sit_hr_test
+MC地址：https://feature.kingdee.com:2024/mc_feature
+环境地址：https://feature.kingdee.com:1026/feature_sit_hr
+AppStore及静态资源所在机器：制品库
+云容器所在项目：苍穹标准产品特性研发
+应用名称：feature_sit_hr_test
+
+内网：
+集群名称：feature_sit_hr_dev
+MC地址：http://172.17.51.95:8080
+
+https://feature.kingdee.com:1026/feature_sit_hr/monitor/eye/#/home/index   
+账号密码：admin  Admin#123
+
+
+patch环境montor账号密码 admin/Admin#1
+
+
+地铁线：
+http://crp.kingdee.com/cd/drawMetro?metroid=600710307085549568
+
+
+172账号密码：KDadm!@#2022
+
+mc账号
+kang_zhao/Cosmic@2021
+guest/Cie@2023
+
+
+
+敏态预发布环境：
+https://agilepre.kdcloud.com/   
+账密 administrator   Co2ing0w@2021
+monitor： 
+https://pretest.kdcloud.com/monitor/eye/#/home/index
+guest Guest@2018
+
+稳态预发布环境 ：
+https://pretest.kdcloud.com/login.html
+administrator  pretest@1qaz
+monitor地址
+https://pretest.kdcloud.com/monitor/eye/#/home/index
+kdcloud Guest@2019
+guest Guest@2018
