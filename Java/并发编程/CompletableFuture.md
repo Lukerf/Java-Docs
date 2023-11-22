@@ -1,4 +1,8 @@
-参考地址：https://juejin.cn/post/6844904195162636295
+参考地址：
+
+https://juejin.cn/post/6844904195162636295
+
+https://tech.meituan.com/2022/05/12/principles-and-practices-of-completablefuture.html
 
 ### 1. 基本介绍
 
