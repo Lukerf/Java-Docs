@@ -4,7 +4,7 @@ HashTable效率低下，因为其实现使用了synchronized对put操作进行�
 
 ### 1.7版本的ConcurrentHashMap
 
-结构是一个Segment数组，而每个Segment都相当于一个HashMap，Segment通过继承ReentrantLock进行加锁，也就是说并发量就是Segment数组的大小，且Segment数组不可扩容。
+基于分段锁实现的，结构是一个Segment数组，而每个Segment都相当于一个HashMap，Segment通过继承ReentrantLock进行加锁，也就是说并发量就是Segment数组的大小，且Segment数组不可扩容。
 
 #### 核心思想
 
@@ -21,4 +21,16 @@ ConcurrentHashMap(int initialCapacity,float loadFactor,int concurrencyLevel)。�
 负载因子: Segment内部HashMap的负载因子
 
 concurrencyLevel: 并发量，实际就是segment的大小
+
+
+
+### 1.8版本的ConcurrentHashMap
+
+结构上和HashMap一致，通过数组+链表+红黑树实现
+
+数据安全通过对Node节点加锁实现，使用Synchronized加锁，如果Node节点为空，则通过CAS操作赋值
+
+
+
+#### 扩容
 

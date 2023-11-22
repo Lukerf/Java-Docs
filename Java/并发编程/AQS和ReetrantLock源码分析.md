@@ -161,3 +161,6 @@ public class AbstractQueuedSynchronizerDemo {
 }
 ```
 
+
+
+Lock和synchronized的区别
