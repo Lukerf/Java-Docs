@@ -59,3 +59,15 @@ end age_cut
 from user_profile;
 ```
 
+case 和 count 或者 sum语句一起用
+
+```sql
+SELECT
+        count(1) AS totalCount,
+        SUM(f.plat_fee) AS totalAmount,
+        COUNT(CASE WHEN tr.state not in ('thePayerRefusesConfirm','supplierRefusedToSignCashAgreement','fundersApprovalReject','loanFail','bankEntPayAcctAddingReject','theFinancingFailedBecauseTheAssetMatured') THEN 1 END) AS platFeeCount,
+        SUM(CASE WHEN tr.state not in ('thePayerRefusesConfirm','supplierRefusedToSignCashAgreement','fundersApprovalReject','loanFail','bankEntPayAcctAddingReject','theFinancingFailedBecauseTheAssetMatured') THEN f.plat_fee ELSE 0 END) AS platFeeAmount
+        <include refid="platFeeLedgerFrom"/>
+        <include refid="platFeeLedgerWhere"/>
+```
+
