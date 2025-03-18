@@ -32,6 +32,12 @@ group by:通常与上面的函数配合使用；
 
 having: where 不能用于聚合函数中，所以用having 替换
 
+```sql
+// 查询某个字段存在两条以上的记录的所有行
+select asset_no ,count(asset_no) assetNoNum from acflow_business_common.company_confirmed_asset_record ccar group by asset_no having assetNoNum>1
+
+```
+
 
 
 ### 条件函数
