@@ -1,145 +1,24 @@
 ### 1. Bean的生命周期
 
-实例化 
+BeanFactoryPostProcessor 可以在 Bean 实例化之前获取 Bean 的配置元数据，并允许用户对其修改
 
-属性赋值 -- >BeanPostProcessor.postProcessBeforeInitialization
+--> 实例化（如果Bean实现了FactoryBean方法，会通过调用getObject方法创建Bean的实例） 
 
-初始化 --> （InitializingBean.afterPropertiesSet 或 @PostConstruct）
+--> 属性赋值（如果 Bean 实现了 Aware 接口（如 BeanNameAware、BeanFactoryAware 等），Spring 会调用相应的回调方法。） -- >BeanPostProcessor.postProcessBeforeInitialization
 
-使用
+--> 初始化 --> （InitializingBean.afterPropertiesSet 或 @PostConstruct用于自定义的初始化方法）
 
-销毁
+--> 使用
 
+ --> 销毁（DisposableBean.destroy 或 @PreDestroy用于自定义的销毁方法）
 
+### 2. BeanFactoryPostProcessor 
 
-### 1. BeanPostProcessor 
-
-Spring 的 BeanPostProcessor 接口给提供了对 Bean 进行再加工的扩展点，BeanPostProcessor 常用于处理自定义注解。在RpcProvider实例化的前后加入自定义的逻辑处理
-
-```java
-public class RpcProvider implements InitializingBean, BeanPostProcessor {
-    // 省略其他代码
-    private final Map<String, Object> rpcServiceMap = new HashMap<>();
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        RpcService rpcService = bean.getClass().getAnnotation(RpcService.class);
-        if (rpcService != null) {
-            String serviceName = rpcService.serviceInterface().getName();
-            String serviceVersion = rpcService.serviceVersion();
-            try {
-                ServiceMeta serviceMeta = new ServiceMeta();
-                serviceMeta.setServiceAddr(serverAddress);
-                serviceMeta.setServicePort(serverPort);
-                serviceMeta.setServiceName(serviceName);
-                serviceMeta.setServiceVersion(serviceVersion);
-                // TODO 发布服务元数据至注册中心
-                rpcServiceMap.put(RpcServiceHelper.buildServiceKey(serviceMeta.getServiceName(), serviceMeta.getServiceVersion()), bean);
-            } catch (Exception e) {
-                log.error("failed to register service {}#{}", serviceName, serviceVersion, e);
-            }
-        }
-        return bean;
-    }
-}
- @Override
- public void afterPropertiesSet() throws Exception {
-        new Thread(() -> {
-            try {
-                startRpcServer();
-            } catch (Exception e) {
-                log.error("start rpc server error.", e);
-            }
-        }).start();
-  }
-```
-
-
-
-### 2. FactoryBean 
-
-Spring 的 FactoryBean 接口可以帮助我们实现自定义的 Bean，FactoryBean 是一种特种的工厂 Bean，通过 getObject() 方法返回对象，而并不是 FactoryBean 本身。
+BeanFactoryPostProcessor 可以在 Bean 实例化之前获取 Bean 的配置元数据，并允许用户对其修改。而 BeanPostProcessor 是在 Bean 初始化前、后执行，它并不能修改 Bean 的配置信息。
 
 ```java
-public class RpcReferenceBean implements FactoryBean<Object> {
-
-    private Class<?> interfaceClass;
-
-    private String serviceVersion;
-
-    private String registryType;
-
-    private String registryAddr;
-
-    private long timeout;
-
-    private Object object;
-
-    @Override
-
-    public Object getObject() throws Exception {
-
-        return object;
-
-    }
-
-    @Override
-
-    public Class<?> getObjectType() {
-
-        return interfaceClass;
-
-    }
-
-    public void init() throws Exception {
-
-        // TODO 生成动态代理对象并赋值给 object
-
-    }
-
-    public void setInterfaceClass(Class<?> interfaceClass) {
-
-        this.interfaceClass = interfaceClass;
-
-    }
-
-    public void setServiceVersion(String serviceVersion) {
-
-        this.serviceVersion = serviceVersion;
-
-    }
-
-    public void setRegistryType(String registryType) {
-
-        this.registryType = registryType;
-
-    }
-
-    public void setRegistryAddr(String registryAddr) {
-
-        this.registryAddr = registryAddr;
-
-    }
-
-    public void setTimeout(long timeout) {
-
-        this.timeout = timeout;
-
-    }
-
-}
-```
-
-
-
-### 3. BeanFactoryPostProcessor 
-
-BeanFactoryPostProcessor 可以在 Bean 实例化之前获取 Bean 的配置元数据，并允许用户对其修改。而 BeanPostProcessor 是在 Bean 初始化前后执行，它并不能修改 Bean 的配置信息。
-
-```
 @Component
-
 @Slf4j
-
 public class RpcConsumerPostProcessor implements ApplicationContextAware, BeanClassLoaderAware, BeanFactoryPostProcessor {
 
     private ApplicationContext context;
@@ -232,4 +111,129 @@ public class RpcConsumerPostProcessor implements ApplicationContextAware, BeanCl
 
 }
 ```
+
+
+
+
+
+### 3. BeanPostProcessor 和InitializingBean	
+
+Spring 的 BeanPostProcessor 接口给提供了对 Bean 进行再加工的扩展点，BeanPostProcessor 常用于处理自定义注解。在RpcProvider实例化的前后加入自定义的逻辑处理
+
+```java
+public class RpcProvider implements InitializingBean, BeanPostProcessor {
+    // 省略其他代码
+    private final Map<String, Object> rpcServiceMap = new HashMap<>();
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        RpcService rpcService = bean.getClass().getAnnotation(RpcService.class);
+        if (rpcService != null) {
+            String serviceName = rpcService.serviceInterface().getName();
+            String serviceVersion = rpcService.serviceVersion();
+            try {
+                ServiceMeta serviceMeta = new ServiceMeta();
+                serviceMeta.setServiceAddr(serverAddress);
+                serviceMeta.setServicePort(serverPort);
+                serviceMeta.setServiceName(serviceName);
+                serviceMeta.setServiceVersion(serviceVersion);
+                // TODO 发布服务元数据至注册中心
+                rpcServiceMap.put(RpcServiceHelper.buildServiceKey(serviceMeta.getServiceName(), serviceMeta.getServiceVersion()), bean);
+            } catch (Exception e) {
+                log.error("failed to register service {}#{}", serviceName, serviceVersion, e);
+            }
+        }
+        return bean;
+    }
+}
+ @Override
+ public void afterPropertiesSet() throws Exception {
+        new Thread(() -> {
+            try {
+                startRpcServer();
+            } catch (Exception e) {
+                log.error("start rpc server error.", e);
+            }
+        }).start();
+  }
+```
+
+### 4. BeanFactory
+
+BeanFactory是容器，负责创建、配置和管理Bean实例，默认情况下BeanFactory是延迟加载Bean的，只有在真正需要时才会创建Bean实例
+
+### 5. FactoryBean 
+
+Spring 的 FactoryBean 接口可以帮助我们实现自定义的 Bean，FactoryBean 是一种特种的工厂 Bean，通过 getObject() 方法返回对象，而并不是 FactoryBean 本身。
+
+```java
+public class RpcReferenceBean implements FactoryBean<Object> {
+
+    private Class<?> interfaceClass;
+
+    private String serviceVersion;
+
+    private String registryType;
+
+    private String registryAddr;
+
+    private long timeout;
+
+    private Object object;
+
+    @Override
+
+    public Object getObject() throws Exception {
+
+        return object;
+
+    }
+
+    @Override
+
+    public Class<?> getObjectType() {
+
+        return interfaceClass;
+
+    }
+
+    public void init() throws Exception {
+
+        // TODO 生成动态代理对象并赋值给 object
+
+    }
+
+    public void setInterfaceClass(Class<?> interfaceClass) {
+
+        this.interfaceClass = interfaceClass;
+
+    }
+
+    public void setServiceVersion(String serviceVersion) {
+
+        this.serviceVersion = serviceVersion;
+
+    }
+
+    public void setRegistryType(String registryType) {
+
+        this.registryType = registryType;
+
+    }
+
+    public void setRegistryAddr(String registryAddr) {
+
+        this.registryAddr = registryAddr;
+
+    }
+
+    public void setTimeout(long timeout) {
+
+        this.timeout = timeout;
+
+    }
+
+}
+```
+
+
 

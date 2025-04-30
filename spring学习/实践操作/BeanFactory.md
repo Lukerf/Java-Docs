@@ -1,4 +1,4 @@
-### 1. BeanFactory好FactoryBean
+### 1. BeanFactory和FactoryBean
 
 BeanFactory是容器，负责创建、配置和管理Bean实例，默认情况下BeanFactory是延迟加载Bean的，只有在真正需要时才会创建Bean实例
 

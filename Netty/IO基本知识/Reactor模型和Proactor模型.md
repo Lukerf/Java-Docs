@@ -4,6 +4,8 @@
 
 1. 单Reactor 单线程/进程
 
+   适用于低并发场景
+
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/J0g14CUwaZcvaLVakREneqAvT5K3bknhx9Rl8jEhn0sLY5qEFPz7wNkLIkIu4fxEWrZcx2N8hpXOd23ZtfkyibA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
 - Reactor 对象的作用是监听和分发事件；
@@ -16,9 +18,13 @@
 
 2. 单Reactor 多线程/进程
 
+   默认模式，平衡吞吐与延迟
+
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/J0g14CUwaZcvaLVakREneqAvT5K3bknhxqr0wQngia4aqVnGbp5czApKH9SJOvRjMglS9fgxzZ2t8QFhq8E634Q/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
 3. 多Reactor 多线程/进程
+
+   支持自定义线程池隔离I/O与业务逻辑，承载海量客户端连接建立以及I/O操作
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/J0g14CUwaZcvaLVakREneqAvT5K3bknhS0hQ9ibrBOtDBQGkNQgTaD0BwpoibrVwv9Uq4hbEP3VGUcYChoia3UjmA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
@@ -26,7 +32,9 @@
 
 #### 2. 2 Reactor高性能的原因
 
-
+1. 基于I/O多路复用
+2. 主从Reactor多线程模型解决了高并发场景下单个NIO线程无法承载海量客户端连接建立以及I/O操作的性能瓶颈
+3. 
 
 ### 2. Proactor模型
 
