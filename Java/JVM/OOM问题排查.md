@@ -17,7 +17,11 @@
 
 
 
-### 4. 实战案例分析
+### 4. MAT工具分析按钮操作
+
+
+
+![image-20250506160446082](https://raw.githubusercontent.com/Lukerf/Java-Docs/master/image/image-20250506160446082.png)
 
 
 
@@ -42,12 +46,43 @@
 
 显示当前对象直接或间接支配的所有对象（即如果该对象被回收，这些对象也会被回收）
 
-
-
-### **三者的核心区别**
+**三者的核心区别**
 
 | 功能                  | 分析方向                 | 典型应用场景                       |
 | :-------------------- | :----------------------- | :--------------------------------- |
 | **Path to GC Roots**  | 从对象向上追溯到 GC Root | 为什么对象泄漏？谁在阻止它被回收？ |
 | **List objects**      | 直接引用关系（出/入）    | 对象内部结构或直接引用者是谁？     |
 | **Show Retained Set** | 对象支配的所有下级对象   | 对象实际占用了多少内存？           |
+
+
+
+### 5. 实战案例分析
+
+打开hprof文件，点击 “ Leak Suspects ” 查看内存泄漏分析，可以看到pdfToImg线程池创建的线程占用了78.8的内存
+
+![image-20250506160643848](https://raw.githubusercontent.com/Lukerf/Java-Docs/master/image/image-20250506160643848.png)
+
+任意找一个pdfToImg的Thread，查看其引用的对象（out），哪个大对象没有释放
+
+![image-20250506160923137](https://raw.githubusercontent.com/Lukerf/Java-Docs/master/image/image-20250506160923137.png)
+
+发现大对象是BufferedImage
+
+![image-20250506175431486](https://raw.githubusercontent.com/Lukerf/Java-Docs/master/image/image-20250506175431486.png)
+
+右键当前Thread->Java Basics -> Thread Details，可以看到当前线程的调用栈，代码里面发现有PdfToImgTask方法，查看代码，发现是这个方法里创建的BufferedImage没有调用flush进行回收
+
+![image-20250506175306902](https://raw.githubusercontent.com/Lukerf/Java-Docs/master/image/image-20250506175306902.png)
+
+
+
+![image-20250506175837951](https://raw.githubusercontent.com/Lukerf/Java-Docs/master/image/image-20250506175837951.png)
+
+以Thread持有BufferedImage为例：
+
+1. 在MAT中找到问题Thread对象
+2. 查看stackTrace定位最近执行的业务方法
+3. 检查threadLocals中是否缓存了图像
+4. 分析target Runnable对象的成员变量
+5. 结合代码搜索确认具体创建位置
+6. 检查是否缺少flush()或clear()调用
