@@ -58,7 +58,9 @@
 
 ### 5. 实战案例分析
 
-打开hprof文件，点击 “ Leak Suspects ” 查看内存泄漏分析，可以看到pdfToImg线程池创建的线程占用了78.8的内存
+环境配置： 内存6GB
+
+打开hprof文件，点击 “ Leak Suspects ” 查看内存泄漏分析，可以看到pdfToImg线程池创建的线程占用了78.8的内存，而且线程数并不多，单个线程的内存占用量达到了7%（286M)
 
 ![image-20250506160643848](https://raw.githubusercontent.com/Lukerf/Java-Docs/master/image/image-20250506160643848.png)
 
@@ -66,11 +68,13 @@
 
 ![image-20250506160923137](https://raw.githubusercontent.com/Lukerf/Java-Docs/master/image/image-20250506160923137.png)
 
-发现大对象是BufferedImage
+发现大对象是BufferedImage，单个对象占用高达183M。
 
 ![image-20250506175431486](https://raw.githubusercontent.com/Lukerf/Java-Docs/master/image/image-20250506175431486.png)
 
 右键当前Thread->Java Basics -> Thread Details，可以看到当前线程的调用栈，代码里面发现有PdfToImgTask方法，查看代码，发现是这个方法里创建的BufferedImage没有调用flush进行回收
+
+优化以后需要调用flush方法
 
 ![image-20250506175306902](https://raw.githubusercontent.com/Lukerf/Java-Docs/master/image/image-20250506175306902.png)
 
