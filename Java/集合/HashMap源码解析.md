@@ -35,3 +35,4 @@ HashMap和Hashtable、HashSet、TreeMap的区别
 3. HashMap为什么线程不安全
 4. ConcurrentHashMap和Hashtable的区别
 5. ConcurrentHashMap线程安全的具体实现方式
+5. 为什么头插法会出现环形链表
