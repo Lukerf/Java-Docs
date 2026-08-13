@@ -30,7 +30,7 @@ concurrencyLevel: 并发量，实际就是segment的大小
 
 数据安全通过对Node节点加锁实现，使用Synchronized加锁，如果Node节点为空，则通过CAS操作赋值
 
-
+ConcurrentHashMap用的头插法，插入效率为O(1)
 
 #### 扩容
 
