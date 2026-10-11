@@ -38,7 +38,15 @@ select asset_no ,count(asset_no) assetNoNum from acflow_business_common.company_
 
 ```
 
-
+```sql
+-- 分组后连接
+SELECT 
+    class,
+    GROUP_CONCAT(student_name) AS name_list
+FROM students
+GROUP BY class
+HAVING GROUP_CONCAT(student_name) LIKE '%张三%';
+```
 
 ### 条件函数
 
@@ -75,5 +83,34 @@ SELECT
         SUM(CASE WHEN tr.state not in ('thePayerRefusesConfirm','supplierRefusedToSignCashAgreement','fundersApprovalReject','loanFail','bankEntPayAcctAddingReject','theFinancingFailedBecauseTheAssetMatured') THEN f.plat_fee ELSE 0 END) AS platFeeAmount
         <include refid="platFeeLedgerFrom"/>
         <include refid="platFeeLedgerWhere"/>
+```
+
+ifnull用法
+
+```sql
+SELECT 
+    IFNULL(
+        (SELECT DISTINCT salary 
+         FROM employee 
+         ORDER BY salary DESC 
+         LIMIT 1 OFFSET 1),
+        NULL
+    ) AS second_highest_salary;
+```
+
+
+
+### limit语句的用法
+
+```sql
+-- 基本语法
+SELECT 列名 
+FROM 表名 
+LIMIT [偏移量,] 行数;
+
+-- 或者使用 OFFSET 关键字（更清晰）
+SELECT 列名 
+FROM 表名 
+LIMIT 行数 OFFSET 偏移量;
 ```
 
